@@ -15,7 +15,6 @@ const genPassword = (pass) => {
   };
 };
 /*
-(only gets used in the passport-local strategy)
 + takes the provided pass from the requset and the hash and salt form the db
 + genrates a hash based on the enterd pass word with the salt from the db
 + compares the genrated hash with the hash form the db and returns a boolean 
