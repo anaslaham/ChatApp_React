@@ -24,13 +24,14 @@ export const Login = (user) => {
   };
 };
 
-export const createMessage = (chatId, content) => async (
+export const createMessage = (chatId, content,username) => async (
   dispatch,
   getstate
 ) => {
   const res = await chatAPI.post(
     "/message",
     {
+      username,
       chatId,
       content,
     },
@@ -44,7 +45,7 @@ export const createMessage = (chatId, content) => async (
 
   dispatch({
     type: "message",
-    payload: { content, id: res.data.id, username: getstate().User.username },
+    payload: { content, id: res.data.id, username },
   });
 };
 

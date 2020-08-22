@@ -1,7 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import { createMessage, addMessage } from "../redux/actions";
-import socket from "../API/Socketio";
 import { Link } from "react-router-dom";
 import MessageInput from "./messageInput";
 import {
@@ -28,21 +27,6 @@ const parseNames = (user, chat) => {
   }
 };
 class Maximized extends React.Component {
-  componentDidMount() {}
-  onMessageSend = (text) => {
-    console.log(text);
-    socket.emit("chat message", { msg: text, name: this.props.user.username });
-    this.props.createMessage(this.props.chat.id, text);
-    socket.on("chat message", ({ name, msg }) => {
-      console.log(name + msg + "called");
-      this.props.addMessage(msg, name, this.props.chat.id);
-    });
-  };
-
-  componentWillUnmount() {
-    socket.off("chat message");
-  }
-
   render() {
     if (this.props.user) {
       return (
@@ -70,7 +54,7 @@ class Maximized extends React.Component {
               </Column>
               <Column flexFill>
                 <Title>
-                  {parseNames(this.props.user, this.props.chat).othername}
+                  {parseNames(this.props.user, this.props.chat[this.props.selectedChat]).othername}
                 </Title>
               </Column>
             </Row>
@@ -87,7 +71,7 @@ class Maximized extends React.Component {
               containScrollInSubtree
               style={{ paddingBottom: "4rem", marginTop: "3.5rem" }}
             >
-              {this.props.chat.massages.map((message, index, messagesArr) => (
+              {this.props.chat[this.props.selectedChat].massages.map((message, index, messagesArr) => (
                 <MessageGroup
                   onlyFirstWithMeta
                   isOwn={message.username === this.props.user.username}
@@ -119,7 +103,7 @@ class Maximized extends React.Component {
               ))}
             </MessageList>
           </div>
-          <MessageInput onMessageSend={this.onMessageSend} />
+          <MessageInput chatId={this.props.chat[this.props.selectedChat].id} onMessageSend={this.props.onMessageSend} />
         </div>
       );
     } else {
@@ -131,7 +115,7 @@ class Maximized extends React.Component {
 const MapStateToProps = (RState) => {
   return {
     selectedChat: RState.selectedChat,
-    chat: RState.Chats[RState.selectedChat],
+    chat: RState.Chats,
     user: RState.User,
   };
 };

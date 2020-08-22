@@ -29,7 +29,7 @@ class messageInput extends Component {
           <Fit>
             <SendButton
               onClick={() => {
-                this.props.onMessageSend(this.state.messageText);
+                this.props.onMessageSend(this.state.messageText,this.props.chatId);
                 this.setState({ messageText: "" });
               }}
               style={{ marginRight: "1.5rem" }}

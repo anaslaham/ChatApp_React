@@ -22,14 +22,16 @@ const io = socketio(api);
 // this function gets called when the client connects to the server
 io.on("connection", (socket) => {
   console.log("user connected");
+  let roomid="";
+  socket.on("join", (msgid) => {
+    roomid=msgid
+    socket.join(msgid);
+    console.log("joined room" + roomid);
+    socket.emit("join", `joined room ${msgid}`);
+  });
   socket.on("chat message", ({ msg, name }) => {
     console.log("message: " + msg + "name: " + name);
-    socket.broadcast.emit("chat message", { msg, name });
-  });
-  socket.on("join", (msgid) => {
-    socket.join(msgid);
-    console.log("joined room");
-    socket.emit("join", `joined room ${msgid}`);
+    io.to(roomid).emit("chat message", { msg, name });
   });
 });
 mongoose.connect(process.env.DB_STRING, {
@@ -261,7 +263,7 @@ app.post(
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
     const content = req.body.content;
-    const username = req.user.username;
+    const username = req.body.username;
     const chatId = req.body.chatId;
     Chat.updateOne(
       {

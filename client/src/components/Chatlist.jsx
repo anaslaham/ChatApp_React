@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { getChats, selectChat } from "../redux/actions";
+import { getChats, selectChat,createMessage } from "../redux/actions";
 import socket from "../API/Socketio";
 import {
   ChatList,
@@ -35,6 +35,7 @@ class chatList extends React.Component {
       };
     }
   };
+
   render() {
     if (this.props.user) {
       return (
@@ -107,4 +108,4 @@ const mapStateToProps = (state) => {
     user: state.User,
   };
 };
-export default connect(mapStateToProps, { getChats, selectChat })(chatList);
+export default connect(mapStateToProps, { getChats, selectChat,createMessage })(chatList);

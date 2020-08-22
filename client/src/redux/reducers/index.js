@@ -5,22 +5,21 @@ const selectedChat = (selectedChat = 0, action) => {
   }
   return selectedChat;
 };
-const ChatsReducer = (Chats = [], action) => {
+const ChatsReducer = (oldChats = [], action) => {
   if (action.type === "chats") {
     return action.payload;
   } else if (action.type === "message" || action.type === "messageAdd") {
     let foundIndex;
-    Chats.forEach((chat, index) => {
+    oldChats.forEach((chat, index) => {
       if (chat.id === action.payload.id) {
         foundIndex = index;
       }
     });
-    let newChats = Chats;
+    let newChats = [...oldChats];
     newChats[foundIndex].massages.push(action.payload);
-    console.log(newChats[foundIndex].massages);
     return newChats;
   }
-  return Chats;
+  return oldChats;
 };
 const handelUser = (User = null, action) => {
   if (action.type === "User") {

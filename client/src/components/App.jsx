@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { connect } from "react-redux";
 import { useCookies } from "react-cookie";
+import socket from "../API/Socketio";
 import Loginform from "./Form/form";
 import chatAPI from "../API/ChatAPI";
 import ChatList from "./Chatlist";
@@ -108,6 +109,15 @@ const App = (props) => {
         }
       });
   };
+  const onMessageSend = (text,chatId) => {
+    socket.off("chat message")
+    console.log("sent message");
+    socket.emit("chat message", { msg: text, name: props.user.username });
+    socket.on("chat message", ({ name, msg }) => {
+      console.log(name + msg + "message receved from the server");
+      props.createMessage(chatId,msg,name);
+    });
+  };
   return (
     <BrowserRouter>
       <Switch>
@@ -142,7 +152,7 @@ const App = (props) => {
           render={(props) => {
             return (
               <ThemeProvider theme={themes[state]}>
-                <Chat {...props} />
+                <Chat {...props} onMessageSend={onMessageSend} />
               </ThemeProvider>
             );
           }}
