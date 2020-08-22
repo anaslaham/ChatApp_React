@@ -24,7 +24,12 @@ io.on("connection", (socket) => {
   console.log("user connected");
   socket.on("chat message", ({ msg, name }) => {
     console.log("message: " + msg + "name: " + name);
-    socket.broadcast.emit("chat message",{ msg, name });
+    socket.broadcast.emit("chat message", { msg, name });
+  });
+  socket.on("join", (msgid) => {
+    socket.join(msgid);
+    console.log("joined room");
+    socket.emit("join", `joined room ${msgid}`);
   });
 });
 mongoose.connect(process.env.DB_STRING, {

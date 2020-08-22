@@ -1,6 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { getChats, selectChat } from "../redux/actions";
+import socket from "../API/Socketio";
 import {
   ChatList,
   ChatListItem,
@@ -12,9 +13,16 @@ import {
 } from "@livechat/ui-kit";
 
 class chatList extends React.Component {
-  onMessageSend = () => {};
   componentDidMount() {
     this.props.getChats();
+  }
+  componentDidUpdate(){
+    this.props.chats.forEach((chat) => {
+      socket.emit("join", chat.id);
+    });
+    socket.on("join", (msgid) => {
+      console.log(msgid);
+    });
   }
   parseNames = (user, chat) => {
     if (chat.user_1Name === user.username) {
@@ -46,7 +54,7 @@ class chatList extends React.Component {
               ? this.props.chats.map((chat, index) => {
                   return (
                     <ChatListItem
-                    key={index}
+                      key={index}
                       onClick={() => {
                         this.props.selectChat(index);
                         this.props.history.push("/chat");

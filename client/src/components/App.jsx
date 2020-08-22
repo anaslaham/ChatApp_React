@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { connect } from "react-redux";
+import { useCookies } from "react-cookie";
 import Loginform from "./Form/form";
 import chatAPI from "../API/ChatAPI";
 import ChatList from "./Chatlist";
@@ -73,19 +74,15 @@ const themes = {
     },
   },
 };
-class App extends React.Component {
-  state = {
-    theme: "purpleTheme",
+const App = (props) => {
+  const [state, setState] = useState("purpleTheme");
+  const [cookies, setCookie] = useCookies(["token", "username"]);
+
+  const handleThemeChange = (name) => {
+    setState(name + "Theme");
   };
 
-  handleThemeChange = (name) => {
-    console.log("target.name", name);
-    this.setState({
-      theme: name + "Theme",
-    });
-  };
-
-  handelSubmit = (name, pass, type, history) => {
+  const handelSubmit = (name, pass, type, history) => {
     chatAPI
       .post(
         `/${type}`,
@@ -104,59 +101,59 @@ class App extends React.Component {
           const username = res.data.user.username;
           const token = res.data.token;
           const data = { username, token };
-          this.props.addUserData(data);
-          history.history.push("/");
+          props.addUserData(data);
+          setCookie("token", token, { path: "/" });
+          setCookie("username", username, { path: "/" });
+          history.push("/");
         }
       });
   };
-
-  render() {
-    return (
-      <BrowserRouter>
-        <Switch>
-          <Route
-            exact
-            path="/"
-            render={(props) => (
-              <ThemeProvider theme={themes[this.state.theme]}>
-                <ChatList {...props} />
+  return (
+    <BrowserRouter>
+      <Switch>
+        <Route
+          exact
+          path="/"
+          render={(props) => (
+            <ThemeProvider theme={themes[state]}>
+              <ChatList {...props} />
+            </ThemeProvider>
+          )}
+        ></Route>
+        <Route
+          path="/login"
+          render={(props) => (
+            <Loginform
+              type="login"
+              cookies={cookies}
+              handelSubmit={handelSubmit}
+              {...props}
+            />
+          )}
+        />
+        <Route
+          path="/register"
+          component={() => (
+            <Loginform type="register" handelSubmit={handelSubmit} />
+          )}
+        />
+        <Route
+          path="/chat"
+          render={(props) => {
+            return (
+              <ThemeProvider theme={themes[state]}>
+                <Chat {...props} />
               </ThemeProvider>
-            )}
-          ></Route>
-          <Route
-            path="/login"
-            component={(history) => (
-              <Loginform
-                type="login"
-                handelSubmit={this.handelSubmit}
-                history={history}
-              />
-            )}
-          />
-          <Route
-            path="/register"
-            component={() => (
-              <Loginform type="register" handelSubmit={this.handelSubmit} />
-            )}
-          />
-          <Route
-            path="/chat"
-            render={(props) => {
-              return (
-                <ThemeProvider theme={themes[this.state.theme]}>
-                  <Chat {...props} />
-                </ThemeProvider>
-              );
-            }}
-          />
-        </Switch>
-      </BrowserRouter>
-    );
-  }
-}
+            );
+          }}
+        />
+      </Switch>
+    </BrowserRouter>
+  );
+};
 const mapStateToProps = (state) => {
   return {
-    user:state.User
+    user: state.User,
   };
 };
 export default connect(mapStateToProps, { addUserData: Login, createMessage })(

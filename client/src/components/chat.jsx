@@ -2,6 +2,8 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { createMessage, addMessage } from "../redux/actions";
 import socket from "../API/Socketio";
+import { Link } from "react-router-dom";
+import MessageInput from "./messageInput";
 import {
   Avatar,
   MessageList,
@@ -10,11 +12,7 @@ import {
   AgentBar,
   Title,
   MessageGroup,
-  TextComposer,
   Row,
-  Fill,
-  Fit,
-  SendButton,
   Column,
   Bubble,
 } from "@livechat/ui-kit";
@@ -30,24 +28,21 @@ const parseNames = (user, chat) => {
   }
 };
 class Maximized extends React.Component {
-  
-  state = { messageText: "" };
-
-  onMessageSend = (text, chatId) => {
+  componentDidMount() {}
+  onMessageSend = (text) => {
     console.log(text);
     socket.emit("chat message", { msg: text, name: this.props.user.username });
-    this.props.createMessage(chatId, text);
+    this.props.createMessage(this.props.chat.id, text);
     socket.on("chat message", ({ name, msg }) => {
       console.log(name + msg + "called");
       this.props.addMessage(msg, name, this.props.chat.id);
     });
-    this.setState({ messageText: "" });
   };
 
   componentWillUnmount() {
     socket.off("chat message");
   }
-  
+
   render() {
     if (this.props.user) {
       return (
@@ -67,6 +62,9 @@ class Maximized extends React.Component {
             }}
           >
             <Row flexFill>
+              <Column>
+                <Link to="/">back</Link>
+              </Column>
               <Column>
                 <Avatar imgUrl="https://stroseschool.stroselions.net/wp-content/uploads/2018/04/profile-blank-reva.png" />
               </Column>
@@ -121,41 +119,7 @@ class Maximized extends React.Component {
               ))}
             </MessageList>
           </div>
-          <TextComposer
-            style={{
-              width: "100%",
-              position: "fixed",
-              bottom: 0,
-              padding: "1rem",
-            }}
-          >
-            <Row align="center">
-              <Fill>
-                <input
-                  value={this.state.messageText}
-                  style={{
-                    fontFamily: "'Roboto', sans-serif",
-                    fontSize: "1rem",
-                    width: "100%",
-                  }}
-                  onChange={(e) => {
-                    this.setState({ messageText: e.target.value });
-                  }}
-                />
-              </Fill>
-              <Fit>
-                <SendButton
-                  onClick={() => {
-                    this.onMessageSend(
-                      this.state.messageText,
-                      this.props.chat.id
-                    );
-                  }}
-                  style={{ marginRight: "1.5rem" }}
-                />
-              </Fit>
-            </Row>
-          </TextComposer>
+          <MessageInput onMessageSend={this.onMessageSend} />
         </div>
       );
     } else {
