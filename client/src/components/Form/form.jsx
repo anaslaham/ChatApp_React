@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Login as addUserData } from "../../redux/actions";
+import TextField from "@material-ui/core/TextField";
 import "./form.css";
 import { connect } from "react-redux";
 const Form = ({ addUserData, type, handelSubmit, history, cookies }) => {
@@ -33,42 +34,36 @@ const Form = ({ addUserData, type, handelSubmit, history, cookies }) => {
               <span className="login100-form-title p-b-48">
                 <h6>Please {type}</h6>
               </span>
+              <TextField
+                id="standard-basic"
+                label="username"
+                className="Roboto"
+                onChange={(event) => {
+                  setname(event.target.value);
+                }}
+                style={{
+                  width: "100%",
+                  marginBottom: "1.5rem",
+                  color: "#b721ff",
+                  borderBottomColor: "#b721ff",
+                }}
+              />
 
-              <div className="wrap-input100 validate-input">
-                <input
-                  className="input100"
-                  type="text"
-                  name="username"
-                  onChange={(event) => {
-                    setname(event.target.value);
-                  }}
-                />
-                <span
-                  className="focus-input100"
-                  data-placeholder="Username"
-                ></span>
-              </div>
-
-              <div
-                className="wrap-input100 validate-input"
-                data-validate="Enter password"
-              >
-                <span className="btn-show-pass">
-                  <i className="zmdi zmdi-eye"></i>
-                </span>
-                <input
-                  className="input100"
-                  type="password"
-                  name="pass"
-                  onChange={(event) => {
-                    setpass(event.target.value);
-                  }}
-                />
-                <span
-                  className="focus-input100"
-                  data-placeholder="Password"
-                ></span>
-              </div>
+              <TextField
+                id="standard-basic"
+                label="password"
+                className="Roboto"
+                type="password"
+                onChange={(event) => {
+                  setpass(event.target.value);
+                }}
+                style={{
+                  width: "100%",
+                  marginBottom: "3rem",
+                  color: "#b721ff",
+                  borderBottomColor: "#b721ff",
+                }}
+              />
 
               <div className="container-login100-form-btn">
                 <div className="wrap-login100-form-btn">
@@ -79,14 +74,14 @@ const Form = ({ addUserData, type, handelSubmit, history, cookies }) => {
                 </div>
               </div>
               {type !== "register" ? (
-                <div className="text-center p-t-115">
+                <div className="text-center p-t-80">
                   <span className="txt1">Don’t have an account?</span>
                   <Link className="txt2" to="/register">
                     Sign Up
                   </Link>
                 </div>
               ) : (
-                <div className="text-center p-t-115">
+                <div className="text-center p-t-80">
                   <span className="txt1">Already have an account?</span>
                   <Link className="txt2" to="/login">
                     Login
@@ -101,4 +96,4 @@ const Form = ({ addUserData, type, handelSubmit, history, cookies }) => {
   }
 };
 
-export default connect( null,{ addUserData })(Form);
+export default connect(null, { addUserData })(Form);

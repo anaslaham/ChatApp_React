@@ -1,20 +1,15 @@
-import * as React from "react";
+import React from "react";
 import { connect } from "react-redux";
 import { createMessage, addMessage } from "../redux/actions";
 import { Link } from "react-router-dom";
-import MessageInput from "./messageInput";
-import {
-  Avatar,
-  MessageList,
-  Message,
-  MessageText,
-  AgentBar,
-  Title,
-  MessageGroup,
-  Row,
-  Column,
-  Bubble,
-} from "@livechat/ui-kit";
+import MessageInput from "../MessageInput/messageInput";
+import IconButton from "@material-ui/core/IconButton";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import AppBar from "@material-ui/core/AppBar";
+import Avatar from "@material-ui/core/Avatar";
+import MessageTest from "./Message/Message";
+
+import { Row, Column } from "@livechat/ui-kit";
 const parseNames = (user, chat) => {
   if (chat.user_1Name === user.username) {
     return {
@@ -27,83 +22,77 @@ const parseNames = (user, chat) => {
   }
 };
 class Maximized extends React.Component {
+  getOrder = (index, length) => {
+    if (index == 0) {
+      return "first";
+    } else if (index == length - 1) {
+      return "last";
+    }
+    return "middle";
+  };
+
   render() {
     if (this.props.user) {
       return (
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            height: "calc(100vh - 6rem)",
-          }}
-        >
-          <AgentBar
-            style={{
-              height: "2rem",
-              position: "fixed",
-              top: "0",
-              width: "100%",
-            }}
+        <div>
+          <AppBar
+            style={{ background: "linear-gradient(to right,#6D5BBA,#8D58BF)" }}
           >
             <Row flexFill>
               <Column>
-                <Link to="/">back</Link>
-              </Column>
-              <Column>
-                <Avatar imgUrl="https://stroseschool.stroselions.net/wp-content/uploads/2018/04/profile-blank-reva.png" />
+                <Link to="/">
+                  <IconButton color="primary" component="span">
+                    <ArrowBackIcon color="disabled" fontSize="large" />
+                    <Avatar
+                      style={{
+                        height: "2.5rem",
+                        width: "2.5rem",
+                        margin: ".2rem",
+                      }}
+                      src="https://stroseschool.stroselions.net/wp-content/uploads/2018/04/profile-blank-reva.png"
+                    />
+                  </IconButton>
+                </Link>
               </Column>
               <Column flexFill>
-                <Title>
-                  {parseNames(this.props.user, this.props.chat[this.props.selectedChat]).othername}
-                </Title>
+                <h4 style={{ marginTop: ".5rem", marginLeft: ".1rem" }}>
+                  {
+                    parseNames(
+                      this.props.user,
+                      this.props.chat[this.props.selectedChat]
+                    ).othername
+                  }
+                </h4>
               </Column>
             </Row>
-          </AgentBar>
+          </AppBar>
           <div
             style={{
-              flexGrow: 1,
-              minHeight: 0,
-              height: "100%",
+              paddingTop: ".2rem",
+              marginTop: "4rem",
+              overflowX: "scroll",
+              overflowY: "none",
+              background:
+                "linear-gradient(to right, rgb(109, 91, 186), rgb(141, 88, 191))",
+              paddingBottom: "4.5rem",
             }}
+            className="list"
           >
-            <MessageList
-              active
-              containScrollInSubtree
-              style={{ paddingBottom: "4rem", marginTop: "3.5rem" }}
-            >
-              {this.props.chat[this.props.selectedChat].massages.map((message, index, messagesArr) => (
-                <MessageGroup
-                  onlyFirstWithMeta
-                  isOwn={message.username === this.props.user.username}
-                  style={{ marginBottom: "0rem" }}
-                >
-                  <Message
-                    date={
-                      index !== 0
-                        ? messagesArr[index - 1].username !== message.username
-                          ? message.timeDate
-                          : null
-                        : message.timeDate
-                    }
-                    isOwn={message.username === this.props.user.username}
-                    key={index}
-                    radiusType={"last"}
-                    style={{ marginBottom: "0rem" }}
-                  >
-                    <Bubble
-                      isOwn={message.username === this.props.user.username}
-                      radiusType={"last"}
-                    >
-                      {message.content && (
-                        <MessageText>{message.content}</MessageText>
-                      )}
-                    </Bubble>
-                  </Message>
-                </MessageGroup>
-              ))}
-            </MessageList>
+            {this.props.chat[this.props.selectedChat].massages.map(
+              (message, index, messagesArr) => (
+                <MessageTest
+                  order={this.getOrder(index, messagesArr.length)}
+                  isOwn={!message.username === this.props.user.username}
+                  text={message.content}
+                  date={message.timeDate}
+                />
+              )
+            )}
           </div>
-          <MessageInput chatId={this.props.chat[this.props.selectedChat].id} onMessageSend={this.props.onMessageSend} />
+          <MessageInput
+            chatId={this.props.chat[this.props.selectedChat].id}
+            onMessageSend={this.props.onMessageSend}
+          />
         </div>
       );
     } else {

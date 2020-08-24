@@ -22,9 +22,9 @@ const io = socketio(api);
 // this function gets called when the client connects to the server
 io.on("connection", (socket) => {
   console.log("user connected");
-  let roomid="";
+  let roomid = "";
   socket.on("join", (msgid) => {
-    roomid=msgid
+    roomid = msgid;
     socket.join(msgid);
     console.log("joined room" + roomid);
     socket.emit("join", `joined room ${msgid}`);

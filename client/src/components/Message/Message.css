@@ -1,0 +1,54 @@
+.Message__container {
+  background-color: white;
+  display: inline-block;
+  margin: 0 0.5rem;
+  padding: 0.5rem 1rem;
+}
+.Message__containerfirst {
+  border-top-left-radius: 0.2rem;
+  border-bottom-left-radius: 0.2rem;
+  border-top-right-radius: 0.8rem;
+  border-bottom-right-radius: 0.2rem;
+}
+.Message__containermiddle {
+  border-top-left-radius: 0.2rem;
+  border-bottom-left-radius: 0.2rem;
+  border-top-right-radius: 0.2rem;
+  border-bottom-right-radius: 0.2rem;
+}
+.Message__containerlast {
+  border-top-left-radius: 0.2rem;
+  border-bottom-left-radius: 0.2rem;
+  border-top-right-radius: 0.2rem;
+  border-bottom-right-radius: 0.8rem;
+}
+.Message__containerfirstowner {
+  border-top-right-radius: 0.2rem;
+  border-bottom-right-radius: 0.2rem;
+  border-top-left-radius: 0.8rem;
+  border-bottom-left-radius: 0.2rem;
+  text-align: left;
+}
+.Message__containermiddleowner{
+  border-top-right-radius: 0.2rem;
+  border-bottom-right-radius: 0.2rem;
+  border-top-left-radius: .1rem;
+  border-bottom-left-radius: .1rem;
+  text-align: left;
+}
+.Message__containerlastowner{
+  border-top-right-radius: 0.2rem;
+  border-bottom-right-radius: 0.2rem;
+  border-top-left-radius: 0.2rem;
+  border-bottom-left-radius: 0.8rem;
+  text-align: left;
+}
+
+.Message__date{
+    font-size: .8rem;
+    color: gray;
+    font-weight: 300;
+}
+.list::-webkit-scrollbar {
+  display: none;
+}

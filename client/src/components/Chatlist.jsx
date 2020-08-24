@@ -1,7 +1,11 @@
 import React from "react";
 import { connect } from "react-redux";
-import { getChats, selectChat,createMessage } from "../redux/actions";
+import { getChats, selectChat, createMessage } from "../redux/actions";
 import socket from "../API/Socketio";
+
+import IconButton from "@material-ui/core/IconButton";
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+
 import {
   ChatList,
   ChatListItem,
@@ -16,7 +20,7 @@ class chatList extends React.Component {
   componentDidMount() {
     this.props.getChats();
   }
-  componentDidUpdate(){
+  componentDidUpdate() {
     this.props.chats.forEach((chat) => {
       socket.emit("join", chat.id);
     });
@@ -43,12 +47,17 @@ class chatList extends React.Component {
           <div
             style={{
               color: "#fff",
-              padding: "1.5rem .2rem",
+              padding: "1rem .2rem",
               width: "100vw",
               backgroundImage: "linear-gradient(to left, #21d4fd, #b721ff)",
+              borderBottomLeftRadius:"2rem",
+              borderBottomRightRadius:"2rem"
             }}
           >
-            <h2 style={{ marginLeft: ".5rem" }}>Messages</h2>
+            <h2 style={{ marginLeft: ".5rem",display:"inline-block"}}>Messages</h2>
+            <IconButton style={{marginLeft:"50%"}} onClick={()=>{this.props.logOut(this.props.history)}}>
+              <ExitToAppIcon color="action" fontSize="large" />
+            </IconButton>
           </div>
           <ChatList style={{ maxWidth: "100%" }}>
             {this.props.chats
@@ -80,12 +89,12 @@ class chatList extends React.Component {
                             nowrap
                             style={{ position: "absolute", right: ".5rem" }}
                           >
-                            {chat.massages &&
+                            {chat.massages[chat.massages.length - 1] &&
                               chat.massages[chat.massages.length - 1].timeDate}
                           </Subtitle>
                         </Row>
                         <Subtitle ellipsis>
-                          {chat.massages &&
+                          {chat.massages[chat.massages.length - 1] &&
                             chat.massages[chat.massages.length - 1].content}
                         </Subtitle>
                       </Column>
@@ -108,4 +117,8 @@ const mapStateToProps = (state) => {
     user: state.User,
   };
 };
-export default connect(mapStateToProps, { getChats, selectChat,createMessage })(chatList);
+export default connect(mapStateToProps, {
+  getChats,
+  selectChat,
+  createMessage,
+})(chatList);

@@ -77,8 +77,7 @@ const themes = {
 };
 const App = (props) => {
   const [state, setState] = useState("purpleTheme");
-  const [cookies, setCookie] = useCookies(["token", "username"]);
-
+  const [cookies, setCookie,removeCookie] = useCookies(["token", "username"]);
   const handleThemeChange = (name) => {
     setState(name + "Theme");
   };
@@ -109,14 +108,19 @@ const App = (props) => {
         }
       });
   };
+  const logOut =(history)=>{
+    removeCookie("token", { path: "/" });
+    removeCookie("username", { path: "/" });
+    history.push("/login  ")
+  }
   const onMessageSend = (text,chatId) => {
     socket.off("chat message")
     console.log("sent message");
-    socket.emit("chat message", { msg: text, name: props.user.username });
     socket.on("chat message", ({ name, msg }) => {
       console.log(name + msg + "message receved from the server");
       props.createMessage(chatId,msg,name);
     });
+    socket.emit("chat message", { msg: text, name: props.user.username });
   };
   return (
     <BrowserRouter>
@@ -126,7 +130,7 @@ const App = (props) => {
           path="/"
           render={(props) => (
             <ThemeProvider theme={themes[state]}>
-              <ChatList {...props} />
+              <ChatList {...props} logOut={logOut}/>
             </ThemeProvider>
           )}
         ></Route>

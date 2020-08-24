@@ -1,0 +1,6 @@
+aside.emoji-picker-react{
+    width: 100% !important;
+  }
+  .emoji-picker-react .emoji-scroll-wrapper::-webkit-scrollbar {
+    display: none;
+  }
